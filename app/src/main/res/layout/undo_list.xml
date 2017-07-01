@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:orientation="vertical">
+    <ImageView android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:id="@+id/image_view2"
+        android:layout_margin="2dp"
+        android:paddingTop="5dp"/>
+    <TextView
+        android:id="@+id/listItemTitleView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/listItemDoneButton"
+        android:padding="10dp"
+        android:layout_toRightOf="@+id/image_view2"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
+
+    <TextView
+        android:id="@+id/listItemDateView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/listItemTitleView"
+        android:padding="10dp"
+        android:layout_toRightOf="@+id/image_view2"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
+
+    <TextView
+        android:id="@+id/listItemTimeView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/listItemTitleView"
+        android:layout_toRightOf="@+id/listItemDateView"
+        android:padding="10dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
+</RelativeLayout>

@@ -1,0 +1,44 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.pradhuman.todo.MainActivity">
+  <group>
+    <item
+        android:id="@+id/aboutUs"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_showUndo"
+        android:title="Completed Tasks"
+        app:showAsAction="never" />
+
+  </group>
+    <group>
+        <item android:title="View By Category">
+        <menu>
+            <item android:title="All"
+                android:id="@+id/allCategory"/>
+            <item android:title="Work"
+                android:id="@+id/workCategory"/>
+            <item android:title="Home"
+                android:id="@+id/homeCategory"/>
+            <item android:title="Birthday"
+                android:id="@+id/birthdayCategory"/>
+        </menu>
+        </item>
+    </group>
+    <group>
+        <item android:title="Sort by ">
+            <menu>
+                <item android:title="Priority"
+                    android:id="@+id/priorityP"/>
+                <item android:title="Default"
+                    android:id="@+id/priorityA"/>
+            </menu>
+        </item>
+    </group>
+    <item android:title="Contact Us"
+        android:id="@+id/contactUs"/>
+</menu>
+
