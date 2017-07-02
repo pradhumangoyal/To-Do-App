@@ -30,10 +30,14 @@ public class ToDoAdapter extends ArrayAdapter  {
     ArrayList<ToDo> arrayList;
 
     OnListButtonClickedListener listener;
+  // OnListSwipedListener listenerSwipe;
     void setOnListButtonClickedListener(OnListButtonClickedListener listener){
         this.listener = listener;
+    }/*
+    void setOnListSwipedListener(OnListSwipedListener listenerSwipe){
+        this.listenerSwipe = listenerSwipe;
     }
-
+*/
 
     public ToDoAdapter(@NonNull Context context, ArrayList<ToDo> toDoArrayList) {
         super(context, 0);
@@ -86,6 +90,19 @@ public class ToDoAdapter extends ArrayAdapter  {
 
             }
         });
+        /*final View v = convertView;
+        if(convertView==null)
+            Toast.makeText(context,"ConvertView Null!",Toast.LENGTH_SHORT).show();
+        if(v==null)
+            Toast.makeText(context,"V null",Toast.LENGTH_SHORT).show();
+        convertView.setOnTouchListener(new OnSwipeTouchListener(){
+            @Override
+            public void onSwipeLeft() {
+                Toast.makeText(context,"Hello",Toast.LENGTH_SHORT).show();
+                if(listenerSwipe!=null)
+                    listenerSwipe.listViewSwiped(v,position);
+            }
+        });*/
         TextDrawable drawable = TextDrawable.builder().beginConfig()
                 .textColor(Color.WHITE)
                 .useFont(Typeface.DEFAULT)
@@ -101,3 +118,7 @@ public class ToDoAdapter extends ArrayAdapter  {
 interface OnListButtonClickedListener{
     void listButtonClicked(View v, int pos);
 }
+/*
+interface OnListSwipedListener{
+    void listViewSwiped(View v, int pos);
+}*/

@@ -31,7 +31,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements OnListButtonClickedListener {
+public class MainActivity extends AppCompatActivity implements OnListButtonClickedListener{
 
     ArrayList<ToDo> toDoList;
     ListView listView;
@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements OnListButtonClick
         undoToDoList = new ArrayList<ToDo>();
         listView = (ListView) findViewById(R.id.contentMainListView);
         listadapter = new ToDoAdapter(this, toDoList);
+      //  listadapter.setOnListSwipedListener(this);
         listadapter.setOnListButtonClickedListener(this);
         listView.setAdapter(listadapter);
         /*
@@ -116,6 +117,45 @@ public class MainActivity extends AppCompatActivity implements OnListButtonClick
             }
         });
         updateList();
+        SwipeListViewTouchListener touchListener = new SwipeListViewTouchListener(
+                listView,
+                new SwipeListViewTouchListener.OnSwipeCallback() {
+                    @Override
+                    public void onSwipeLeft(
+                            ListView listView, int[] reverseSortedPositions)
+                    {
+                        int pos = reverseSortedPositions[0];
+                        ToDo obj = toDoList.get(pos);
+                        undoToDoList.add(obj);
+                        addObjToDatabase(obj,ToDoOpenHelper.TO_DO_TABLE_NAME_TWO);
+                        toDoList.remove(pos);
+                        justRemovedPos = pos;
+                        removeDatabase(obj.getId(),ToDoOpenHelper.TO_DO_TABLE_NAME);
+                        listadapter.notifyDataSetChanged();
+                        snackBarShow(listView);
+                        //onLeftSwipe
+                    }
+                    @Override
+                    public void onSwipeRight(ListView listView, int[] reverseSortedPositions)
+                    {
+                        //onRightSwipe
+
+                        int pos = reverseSortedPositions[0];
+                        ToDo obj = toDoList.get(pos);
+                        undoToDoList.add(obj);
+                        addObjToDatabase(obj,ToDoOpenHelper.TO_DO_TABLE_NAME_TWO);
+                        toDoList.remove(pos);
+                        justRemovedPos = pos;
+                        removeDatabase(obj.getId(),ToDoOpenHelper.TO_DO_TABLE_NAME);
+                        listadapter.notifyDataSetChanged();
+                        snackBarShow(listView);
+                    }
+                },true, // example : left action = dismiss
+                true); // example : right action without dismiss animation
+        listView.setOnTouchListener(touchListener);
+        // Setting this scroll listener is required to ensure that during ListView scrolling,
+        // we don't look for swipes.
+        listView.setOnScrollListener(touchListener.makeScrollListener());
 
     }
 
@@ -336,4 +376,9 @@ public class MainActivity extends AppCompatActivity implements OnListButtonClick
         SQLiteDatabase database = toDoOpenHolder.getWritableDatabase();
         database.insert(TABLE_NAME,null,cv);
     }
+
+   /* @Override
+    public void listViewSwiped(View v, int pos) {
+        listButtonClicked(v,pos);
+    }*/
 }
