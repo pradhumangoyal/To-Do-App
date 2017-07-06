@@ -23,7 +23,12 @@
             android:name=".AddActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ShowUndoActivity" />
-        <activity android:name=".UndoActivity"></activity>
+        <activity android:name=".UndoActivity" />
+
+        <receiver
+            android:name=".AlarmReceiver"
+            android:enabled="true"
+            android:exported="true"></receiver>
     </application>
 
 </manifest>

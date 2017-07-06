@@ -40,5 +40,8 @@
     </group>
     <item android:title="Contact Us"
         android:id="@+id/contactUs"/>
+    <item android:title="Remove All"
+        android:id="@+id/removeAll"/>
+
 </menu>
 

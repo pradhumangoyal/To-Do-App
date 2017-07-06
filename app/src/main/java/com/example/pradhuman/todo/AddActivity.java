@@ -4,10 +4,14 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.support.annotation.IntegerRes;
+import android.support.annotation.RequiresApi;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +27,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class AddActivity extends AppCompatActivity {
 
@@ -36,10 +41,12 @@ public class AddActivity extends AppCompatActivity {
     EditText timeEditText;
     Button button;
     long epoch;
-    long second;
+    String dateFormat = "dd/MM/yyy";
+    String timeFormat = "HH:MM";
     //String dateFormatter = "EEE MMM, YYYY"
     long id;
     int position;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,10 +66,10 @@ public class AddActivity extends AppCompatActivity {
         button = (Button) findViewById(R.id.addActivitySubmitButton);
         Intent i = getIntent();
         Bundle bundle = i.getExtras();
-        if(bundle!=null){
-            id = (long)bundle.get(IntentConstants.ID);
-            position = (int)bundle.get(IntentConstants.POSITION);}
-        else
+        if (bundle != null) {
+            id = (long) bundle.get(IntentConstants.ID);
+            position = (int) bundle.get(IntentConstants.POSITION);
+        } else
             id = -1;
         if (id != -1) {
             Log.i("i==-1", "yes");
@@ -120,62 +127,73 @@ public class AddActivity extends AppCompatActivity {
                 ToDoOpenHelper toDoOpenHelper = new ToDoOpenHelper(AddActivity.this);
                 SQLiteDatabase db = toDoOpenHelper.getWritableDatabase();
                 ContentValues cv = new ContentValues();
-                cv.put(ToDoOpenHelper.TO_DO_TITLE,title);
+                cv.put(ToDoOpenHelper.TO_DO_TITLE, title);
                 cv.put(ToDoOpenHelper.TO_DO_CATEGORY, category);
                 cv.put(ToDoOpenHelper.TO_DO_DESC, desc);
                 cv.put(ToDoOpenHelper.TO_DO_IS_CHECKED, 0);
-                cv.put(ToDoOpenHelper.TO_DO_PRIORITY,priorit);
-                cv.put(ToDoOpenHelper.TO_DO_TIME,time);
-                cv.put(ToDoOpenHelper.TO_DO_DATE,date);
+                cv.put(ToDoOpenHelper.TO_DO_PRIORITY, priorit);
+                cv.put(ToDoOpenHelper.TO_DO_TIME, time);
+                cv.put(ToDoOpenHelper.TO_DO_DATE, date);
                 if (id == -1) {
-                    long __id = db.insert(ToDoOpenHelper.TO_DO_TABLE_NAME,null,cv);
+                    long __id = db.insert(ToDoOpenHelper.TO_DO_TABLE_NAME, null, cv);
                     Intent in = new Intent();
-                    in.putExtra(IntentConstants.ID,__id);
-                    setResult(33,in);
+                    in.putExtra(IntentConstants.ID, __id);
+                    setResult(33, in);
                     finish();
-                   // startActivity(in);
+                    // startActivity(in);
 
                 } else {
-                    db.update(ToDoOpenHelper.TO_DO_TABLE_NAME,cv,ToDoOpenHelper.TO_DO_ID + "=" +id,null );
+                    db.update(ToDoOpenHelper.TO_DO_TABLE_NAME, cv, ToDoOpenHelper.TO_DO_ID + "=" + id, null);
                     Intent i = new Intent();
-                    i.putExtra(IntentConstants.POSITION,position);
-                    i.putExtra(IntentConstants.ID,id);
-                    setResult(44,i);
+                    i.putExtra(IntentConstants.POSITION, position);
+                    i.putExtra(IntentConstants.ID, id);
+                    setResult(44, i);
                     finish();
                 }
             }
         });
 
         dateEditText.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View view) {
-                Calendar newCalendar = Calendar.getInstance();
-                int month = newCalendar.get(Calendar.MONTH);  // Current month
-                int year = newCalendar.get(Calendar.YEAR);   // Current year
-                showDatePicker(AddActivity.this, year, month, 1);
+                final Calendar calendar = Calendar.getInstance();
+                DatePickerDialog datePickerDialog = new DatePickerDialog(AddActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+                        calendar.set(Calendar.YEAR, year);
+                        calendar.set(Calendar.MONTH, monthOfYear);
+                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                        dateEditText.setText(simpleDateFormat.format(calendar.getTime()));
+                    }
+                }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.setTitle("Select Date");
+                datePickerDialog.show();
             }
         });
         timeEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Calendar mcurrentTime = Calendar.getInstance();
-                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-                int minute = mcurrentTime.get(Calendar.MINUTE);
-                TimePickerDialog mTimePicker;
-                mTimePicker = new TimePickerDialog(AddActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                final Calendar calendar1 = Calendar.getInstance();
+                TimePickerDialog timePickerDialog = new TimePickerDialog(AddActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
-                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        timeEditText.setText(selectedHour + ":" + selectedMinute);
+                    public void onTimeSet(TimePicker timePicker, int hour, int minute) {
+                        calendar1.set(Calendar.HOUR_OF_DAY, hour);
+                        calendar1.set(Calendar.MINUTE, minute);
+                        SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH:mm" , Locale.getDefault());
+                        timeEditText.setText(simpleTimeFormat.format(calendar1.getTime()));
                     }
-                }, hour, minute, true);//Yes 24 hour time
-                mTimePicker.setTitle("Select Time");
-                mTimePicker.show();
+                },calendar1.get(Calendar.HOUR),calendar1.get(Calendar.MINUTE),true);
+                timePickerDialog.setTitle("Select Time");
+                timePickerDialog.show();
             }
         });
     }
 
 
-    public void showDatePicker(Context context, int initialYear, int initialMonth, int initialDay) {
+  /*  public void showDatePicker(Context context, int initialYear, int initialMonth, int initialDay) {
 
         // Creating datePicker dialog object
         // It requires context and listener that is used when a date is selected by the user.
@@ -201,11 +219,28 @@ public class AddActivity extends AppCompatActivity {
         datePickerDialog.show();
 
     }
-
+*/
     @Override
     public void onBackPressed() {
-        setResult(6);
-        finish();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setMessage("Your Changes Will not be saved.");
+        builder.setTitle("Dou you really want to exit?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                setResult(6);
+                finish();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }
 
