@@ -2,46 +2,75 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.pradhuman.todo.MainActivity">
-  <group>
-    <item
-        android:id="@+id/aboutUs"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+
     <item
         android:id="@+id/action_showUndo"
         android:title="Completed Tasks"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/removeAll"
+        android:title="Remove All" />
 
-  </group>
-    <group>
-        <item android:title="View By Category">
+
+    <item
+        android:id="@+id/viewByCategory"
+        android:title="View By Category"
+        >
         <menu>
-            <item android:title="All"
-                android:id="@+id/allCategory"/>
-            <item android:title="Work"
-                android:id="@+id/workCategory"/>
-            <item android:title="Home"
-                android:id="@+id/homeCategory"/>
-            <item android:title="Birthday"
-                android:id="@+id/birthdayCategory"/>
+            <group android:id="@+id/hideMeCategory">
+                <item
+                    android:id="@+id/allCategory"
+                    android:title="All" />
+                <item
+                    android:id="@+id/workCategory"
+                    android:title="Work" />
+                <item
+                    android:id="@+id/homeCategory"
+                    android:title="Home" />
+                <item
+                    android:id="@+id/birthdayCategory"
+                    android:title="Birthday" />
+            </group>
         </menu>
-        </item>
-    </group>
-    <group>
-        <item android:title="Sort by ">
-            <menu>
-                <item android:title="Priority"
-                    android:id="@+id/priorityP"/>
-                <item android:title="Default"
-                    android:id="@+id/priorityA"/>
-            </menu>
-        </item>
-    </group>
-    <item android:title="Contact Us"
-        android:id="@+id/contactUs"/>
-    <item android:title="Remove All"
-        android:id="@+id/removeAll"/>
+    </item>
+
+
+    <item
+        android:id="@+id/sortBy"
+        android:title="Sort by "
+        >
+        <menu>
+            <group android:id="@+id/hideMeSortBy">
+                <item
+                    android:id="@+id/priorityP"
+                    android:title="Priority" />
+                <item
+                    android:id="@+id/priorityA"
+                    android:title="Default" />
+            </group>
+        </menu>
+
+    </item>
+
+
+    <item
+        android:id="@+id/helpMe"
+        android:title="Help"
+        >
+        <menu>
+            <group android:id="@+id/HideMeHelpMe">
+                <item
+                    android:id="@+id/contactUs"
+                    android:title="Contact Us" />
+                <item
+                    android:id="@+id/aboutUs"
+                    android:title="@string/action_settings"
+                    app:showAsAction="never" />
+            </group>
+        </menu>
+
+    </item>
+
 
 </menu>
 

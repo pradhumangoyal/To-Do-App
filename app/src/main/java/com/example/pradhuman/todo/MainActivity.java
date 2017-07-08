@@ -2,6 +2,7 @@ package com.example.pradhuman.todo;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.ClipData;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,12 +13,18 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.SwipeDismissBehavior;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
@@ -33,13 +40,14 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import java.security.acl.Group;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity implements OnListButtonClickedListener {
-
+public class MainActivity extends AppCompatActivity implements OnListButtonClickedListener,NavigationView.OnNavigationItemSelectedListener {
+ //   MainActivity refrence = MainActivity.this;
     ArrayList<ToDo> toDoList;
     ListView listView;
     ToDoAdapter listadapter, undoAdapter;
@@ -50,7 +58,6 @@ public class MainActivity extends AppCompatActivity implements OnListButtonClick
     //public ItemTouchHelper itemTouchHelper;
     int justRemovedPos;
     ToDo justDeletedObj;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +91,13 @@ public class MainActivity extends AppCompatActivity implements OnListButtonClick
             }
         });
 
+        DrawerLayout drawer = (DrawerLayout)findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -113,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements OnListButtonClick
 
                         justRemovedPos = pos;
                         toDoList.remove(pos);
+                        deleteAlarm(justDeletedObj);
                         removeDatabase(justDeletedObj.getId(), ToDoOpenHelper.TO_DO_TABLE_NAME);
                         listadapter.notifyDataSetChanged();
                         Snackbar.make(view, "Click To Undo", Snackbar.LENGTH_LONG)
@@ -121,7 +136,8 @@ public class MainActivity extends AppCompatActivity implements OnListButtonClick
                                     public void onClick(View view) {
                                         toDoList.add(justRemovedPos,justDeletedObj);
                                         listadapter.notifyDataSetChanged();
-                                        Toast.makeText(MainActivity.this,"Task Undone",Toast.LENGTH_SHORT).show();
+                                        insertAlarm(justDeletedObj);
+                                        Toast.makeText(MainActivity.this,"Task Restored",Toast.LENGTH_SHORT).show();
                                     }
                                 }).setActionTextColor(Color.RED).show();
                     }
@@ -148,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements OnListButtonClick
                             ListView listView, int[] reverseSortedPositions) {
                         int pos = reverseSortedPositions[0];
                         ToDo obj = toDoList.get(pos);
+                        Toast.makeText(MainActivity.this,"Task Deleted",Toast.LENGTH_SHORT).show();
                         undoToDoList.add(obj);
                         addObjToDatabase(obj, ToDoOpenHelper.TO_DO_TABLE_NAME_TWO);
                         toDoList.remove(pos);
@@ -163,14 +180,25 @@ public class MainActivity extends AppCompatActivity implements OnListButtonClick
                         //onRightSwipe
 
                         int pos = reverseSortedPositions[0];
-                        ToDo obj = toDoList.get(pos);
-                        undoToDoList.add(obj);
-                        addObjToDatabase(obj, ToDoOpenHelper.TO_DO_TABLE_NAME_TWO);
-                        toDoList.remove(pos);
+                        Toast.makeText(MainActivity.this,"Task Completed",Toast.LENGTH_SHORT).show();
+                        final ToDo justDeletedObj = new ToDo(toDoList.get(pos).getTitle(), toDoList.get(pos).getDescription(), toDoList.get(pos).getTime()
+                                , toDoList.get(pos).getPriority(), toDoList.get(pos).getCategory(), toDoList.get(pos).getId(), toDoList.get(pos).getDate(), toDoList.get(pos).isChecked());
+
                         justRemovedPos = pos;
-                        removeDatabase(obj.getId(), ToDoOpenHelper.TO_DO_TABLE_NAME);
+                        toDoList.remove(pos);
+                        deleteAlarm(justDeletedObj);
+                        removeDatabase(justDeletedObj.getId(), ToDoOpenHelper.TO_DO_TABLE_NAME);
                         listadapter.notifyDataSetChanged();
-                        snackBarShow(listView);
+                        Snackbar.make(listView, "Click To Undo", Snackbar.LENGTH_LONG)
+                                .setAction("Undo", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        toDoList.add(justRemovedPos,justDeletedObj);
+                                        listadapter.notifyDataSetChanged();
+                                        insertAlarm(justDeletedObj);
+                                        Toast.makeText(MainActivity.this,"Task Restored",Toast.LENGTH_SHORT).show();
+                                    }
+                                }).setActionTextColor(Color.RED).show();
                     }
                 }, true, // example : left action = dismiss
                 true); // example : right action without dismiss animation
@@ -185,7 +213,16 @@ public class MainActivity extends AppCompatActivity implements OnListButtonClick
         ToDoOpenHelper toDoOpenHolder = new ToDoOpenHelper(MainActivity.this);
         toDoList.clear();
         SQLiteDatabase database = toDoOpenHolder.getWritableDatabase();
-        Cursor cursor = database.query(ToDoOpenHelper.TO_DO_TABLE_NAME, null, null, null, null, null, null);
+        //Cursor cursor = database.query(ToDoOpenHelper.TO_DO_TABLE_NAME, null, null, null, null, null, null);
+        String[] rank = new String[]{ToDoOpenHelper.TO_DO_DATE, ToDoOpenHelper.TO_DO_TIME,
+                ToDoOpenHelper.TO_DO_PRIORITY,
+                ToDoOpenHelper.TO_DO_ID,
+                ToDoOpenHelper.TO_DO_TITLE,
+                ToDoOpenHelper.TO_DO_CATEGORY,
+                ToDoOpenHelper.TO_DO_IS_CHECKED,
+                ToDoOpenHelper.TO_DO_DESC};
+        Cursor cursor = database.query(ToDoOpenHelper.TO_DO_TABLE_NAME, rank, null, null, null, null, ToDoOpenHelper.TO_DO_DATE);
+
         while (cursor.moveToNext()) {
             String title = cursor.getString(cursor.getColumnIndex(ToDoOpenHelper.TO_DO_TITLE));
             String date = cursor.getString(cursor.getColumnIndex(ToDoOpenHelper.TO_DO_DATE));
@@ -202,14 +239,14 @@ public class MainActivity extends AppCompatActivity implements OnListButtonClick
         checkEmpty();
     }
 
-    @Override
+   /* @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-
-    @Override
+*/
+/*    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -260,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements OnListButtonClick
             listadapter.notifyDataSetChanged();
         }
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     private void updateListPriority() {
         ToDoOpenHelper toDoOpenHolder = new ToDoOpenHelper(MainActivity.this);
@@ -399,7 +436,7 @@ public class MainActivity extends AppCompatActivity implements OnListButtonClick
         toDoList.add(justRemovedPos, obj);
         listadapter.notifyDataSetChanged();
         checkEmpty();
-        Toast.makeText(MainActivity.this,"Task Undone",Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this,"Task Restored",Toast.LENGTH_SHORT).show();
     }
 
     void addObjToDatabase(ToDo obj, String TABLE_NAME) {
@@ -409,7 +446,7 @@ public class MainActivity extends AppCompatActivity implements OnListButtonClick
         cv.put(ToDoOpenHelper.TO_DO_DESC, obj.getDescription());
         cv.put(ToDoOpenHelper.TO_DO_IS_CHECKED, obj.isChecked());
         cv.put(ToDoOpenHelper.TO_DO_PRIORITY, obj.getPriority());
-        cv.put(ToDoOpenHelper.TO_DO_TIME, obj.getPriority());
+        cv.put(ToDoOpenHelper.TO_DO_TIME, obj.getTime());
         cv.put(ToDoOpenHelper.TO_DO_DATE, obj.getDate());
         cv.put(ToDoOpenHelper.TO_DO_ID, obj.getId());
         ;
@@ -454,4 +491,87 @@ public class MainActivity extends AppCompatActivity implements OnListButtonClick
         //  Log.d("HelloData","I am here"+ myEpoch + " "+  System.currentTimeMillis());
         alarmManager.cancel(pendingIntent);
     }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_showUndo) {
+            Intent i = new Intent(MainActivity.this, ShowUndoActivity.class);
+            startActivity(i);
+        } else if (id == R.id.contactUs) {
+            Intent i = new Intent();
+            i.setAction(Intent.ACTION_SENDTO);
+            Uri uri = Uri.parse("mailto:goyalpradhuman21@gmail.com");
+            i.putExtra(Intent.EXTRA_SUBJECT, "Contact Developer");
+            i.setData(uri);
+            startActivity(i);
+        } else if (id == R.id.aboutUs) {
+            Intent i = new Intent();
+            i.setAction(Intent.ACTION_VIEW);
+            Uri uri = Uri.parse("https://www.codingninjas.in");
+            i.setData(uri);
+
+            startActivity(i);
+        } else if (id == R.id.birthdayCategory) {
+            updateListAccordingToCateg("Birthday");
+        } else if (id == R.id.workCategory) {
+            updateListAccordingToCateg("Work");
+        } else if (id == R.id.homeCategory) {
+            updateListAccordingToCateg("Home");
+        } else if (id == R.id.allCategory) {
+            updateList();
+        } else if (id == R.id.priorityP) {
+            updateListPriority();
+        } else if (id == R.id.priorityA) {
+            updateList();
+        } else if (id == R.id.removeAll) {
+            int size = toDoList.size();
+            for (int pos = 0; pos < size; pos++) {
+                ToDo obj = toDoList.get(pos);
+                undoToDoList.add(obj);
+                addObjToDatabase(obj, ToDoOpenHelper.TO_DO_TABLE_NAME_TWO);
+                toDoList.remove(pos);
+                justRemovedPos = pos;
+                removeDatabase(obj.getId(), ToDoOpenHelper.TO_DO_TABLE_NAME);
+            }
+            checkEmpty();
+
+        }
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        listadapter.notifyDataSetChanged();
+        return true;
+    }
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    /*public void onClickViewByCategory(MenuItem item) {
+        if(findViewById(R.id.hideMeCategory).getVisibility()==View.VISIBLE)
+            findViewById(R.id.hideMeCategory).setVisibility(View.INVISIBLE);
+        else
+            findViewById(R.id.hideMeCategory).setVisibility(View.VISIBLE);
+    }
+
+    public void onClickSortBy(MenuItem item) {
+        if(findViewById(R.id.hideMeSortBy).getVisibility()==View.VISIBLE){
+            findViewById(R.id.hideMeSortBy).setVisibility(View.INVISIBLE);
+        }else
+            findViewById(R.id.hideMeSortBy).setVisibility(View.VISIBLE);
+    }
+
+    public void onClickHelpMe(MenuItem item) {
+        if(findViewById(R.id.HideMeHelpMe).getVisibility()==View.VISIBLE)
+            findViewById(R.id.HideMeHelpMe).setVisibility(View.INVISIBLE);
+        else
+            findViewById(R.id.HideMeHelpMe).setVisibility(View.INVISIBLE);
+    }*/
 }

@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">To Do</string>
     <string name="action_settings">About us</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="title_activity_snooze">SnoozeActivity</string>
 </resources>

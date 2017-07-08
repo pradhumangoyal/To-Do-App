@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,133 +7,153 @@
     android:orientation="vertical"
     tools:context="com.example.pradhuman.todo.UndoActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="2.5"
-        android:background="@color/colorPrimaryDark">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/colorPrimary"
+        app:layout_constraintBottom_toTopOf="@+id/guideline3"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="40dp">
+    <TextView
+        android:id="@+id/addShowUndoActivityEditTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView"
+        android:gravity="center"
+        android:maxLength="10"
+        android:textColor="#FFF"
+        android:textSize="50sp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView8"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline3"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
 
-                <TextView
-                    android:id="@+id/addShowUndoActivityEditTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_below="@+id/textView"
-                    android:layout_marginLeft="10sp"
-                    android:gravity="center"
-                    android:maxLength="10"
-                    android:textColor="#FFF"
-                    android:textSize="50sp" />
-            </RelativeLayout>
-        </LinearLayout>
-    </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="16dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingTop="20dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Category: "
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
-
-            <TextView
-                android:id="@+id/addShowUndoActivityCategory"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingRight="2dp"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-                android:textColor="@android:color/black" />
+                app:layout_constraintLeft_toRightOf="@+id/imageView9"
+                android:layout_marginLeft="8dp"
+                app:layout_constraintTop_toTopOf="@+id/imageView9"
+                android:layout_marginTop="0dp"
+                android:id="@+id/textView11" />
+
+    <TextView
+        android:id="@+id/addShowUndoActivityCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingRight="2dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+        android:textColor="@android:color/black"
+        app:layout_constraintLeft_toRightOf="@+id/textView11"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintTop_toTopOf="@+id/textView11"
+        android:layout_marginTop="0dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Priority:"
-                android:layout_marginLeft="20dp"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:id="@+id/textView9"
+                app:layout_constraintLeft_toRightOf="@+id/imageView8"
+                android:layout_marginLeft="8dp"
+                app:layout_constraintTop_toTopOf="@+id/imageView8"
+                android:layout_marginTop="0dp" />
 
             <TextView
                 android:id="@+id/addShowUndoActivitPriority"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-                android:textColor="@android:color/black" />
-        </LinearLayout>
+                android:textColor="@android:color/black"
+                app:layout_constraintLeft_toRightOf="@+id/textView9"
+                android:layout_marginLeft="8dp"
+                app:layout_constraintTop_toTopOf="@+id/textView9"
+                android:layout_marginTop="0dp" />
+
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="20dp"
+            android:layout_width="74dp"
+            android:layout_height="25dp"
             android:text="Due Date:"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
+            android:textSize="16sp"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            app:layout_constraintLeft_toRightOf="@+id/imageView6"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintTop_toTopOf="@+id/imageView6"
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingTop="20dp">
+            android:id="@+id/textView10"
+            android:layout_marginTop="0dp" />
+
+
 
             <TextView
                 android:id="@+id/addShowUndoActivityDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="30dp"
                 android:focusable="false"
                 android:paddingRight="20dp"
-                android:textColor="@android:color/black"/>
+                android:textColor="@android:color/black"
+                app:layout_constraintLeft_toRightOf="@+id/textView10"
+                android:layout_marginLeft="8dp"
+                app:layout_constraintTop_toTopOf="@+id/textView10"
+                android:layout_marginTop="0dp"
+                app:layout_constraintBottom_toBottomOf="@+id/textView10"
+                android:layout_marginBottom="0dp" />
 
-            <TextView
-                android:id="@+id/addShowUndoActivityTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:focusable="false"
-                android:textColor="@android:color/black"/>
-        </LinearLayout>
+    <TextView
+        android:id="@+id/addShowUndoActivityTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:textColor="@android:color/black"
+        app:layout_constraintLeft_toRightOf="@+id/addShowUndoActivityDate"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintTop_toTopOf="@+id/addShowUndoActivityDate"
+        android:layout_marginTop="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView10"
+        android:layout_marginBottom="0dp" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="20dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Description:"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                app:layout_constraintLeft_toRightOf="@+id/imageView10"
+                android:layout_marginLeft="8dp"
+                app:layout_constraintTop_toTopOf="@+id/imageView10"
+                android:layout_marginTop="0dp"
+                android:id="@+id/textView12" />
 
-            <TextView
-                android:id="@+id/addShowUndoActivityEditDesc"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:maxLength="100"
-                android:textColor="@android:color/black"/>
-        </LinearLayout>
+    <TextView
+        android:id="@+id/addShowUndoActivityEditDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLength="100"
+        android:textColor="@android:color/black"
+        app:layout_constraintLeft_toRightOf="@+id/textView12"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintTop_toTopOf="@+id/textView12"
+        android:layout_marginTop="0dp" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
 
             <Button
                 android:id="@+id/addShowUndoActivitySubmitButton"
@@ -142,7 +162,61 @@
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:text="OK"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
-        </RelativeLayout>
-    </LinearLayout>
-</LinearLayout>
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginRight="8dp"
+                app:layout_constraintRight_toRightOf="parent" />
+
+    <android.support.constraint.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/guideline3"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.4"
+        tools:layout_editor_absoluteY="205dp"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:srcCompat="@drawable/ic_date_range_black_24dp"
+        android:layout_marginLeft="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline3"
+        android:layout_marginTop="16dp" />
+
+    <ImageView
+        android:id="@+id/imageView8"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:srcCompat="@drawable/ic_label_outline_black_24dp"
+        android:layout_marginLeft="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/imageView6" />
+
+    <ImageView
+        android:id="@+id/imageView9"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:srcCompat="@drawable/ic_flag_black_24dp"
+        android:layout_marginLeft="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/imageView8" />
+
+    <ImageView
+        android:id="@+id/imageView10"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:srcCompat="@drawable/ic_assignment_black_24dp"
+        android:layout_marginLeft="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/imageView9" />
+
+</android.support.constraint.ConstraintLayout>
